@@ -45,9 +45,9 @@
 
 <p>All major browsers now support Web Sockets... even IE (since v10)! See - <a href="http://caniuse.com/websockets">http://caniuse.com/websockets</a></p>
 
-<p>HTTP API has to poll, so notifications will be delayed. In addition, each item needs to be manually polled for. As such, the HTTP API only supports a small set of notifications.</p>
+<p>HTTP API has to poll, so notifications will be delayed and have a higher overhead. In addition, each item needs to be manually polled for. As such, the HTTP API only supports a small set of notifications.</p>
 
-<h4>XbmcController</h4>
+<h4>XbmcController (first upload pending)</h4>
 
 <p>Usage:</p>
 
@@ -61,7 +61,7 @@ xbmc.Application.SetMute({mute:true});
 
 <p>Usage:</p>
 
-<pre><code>var xbmcWs = new XbmcWebSockets('192.168.0.10'); // &lt;-- XBMC IP or Hostname
+<pre><code>var xbmcWs = new XbmcWebSockets({hostname:'192.168.0.10'}); // &lt;-- XBMC IP or Hostname
 xbmc.subscribe('Application.OnVolumeChanged',onVolChanges);
 xbmcWs.call('Application.SetMute',{mute:true}); // &lt;-- will cause onVolChanged to be called
 xbmcWs.unsubscribe('Application.OnVolumeChanged',onVolChanges);
