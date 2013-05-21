@@ -1,31 +1,45 @@
-function XbmcWebSocketsApi(hostname, onConnected, onDisconnected) {
-	//"use strict";
+function XbmcWebSocketsApi(options) {
+	"use strict";
 	var self = this;
 	
 	var SOCKET_CONNECTING = 0;
 	var SOCKET_OPEN = 1;
 	var SOCKET_CLOSED = 2; 
-	var WEBSOCKET_TIMEOUT = 3000; //3 seconds
-	var MAX_SOCKET_CONNECTION_ATTEMPTS = 3;
+	//var WEBSOCKET_TIMEOUT = 3000; //3 seconds
+	//var MAX_SOCKET_CONNECTION_ATTEMPTS = 3;
 	
 	var _cmdId = 1; // the next command ID in sequence
 	var _pendingCmds = {};
 	var _notificationBindings = {};
 	
+	var _settings = extend({
+		hostname: 'localhost'
+		,port: '9090'
+		,onConnected: function() {_debug('XBMC Web Sockets Connected');}
+		,onDisconnected: function() {_debug('XBMC Web Sockets Connected');}
+	}, options || {});
+	
 	var _connected = false;
 	var _available = false;
 	var _ws; // the websocket
-	var _port = 9090;
-	var _hostname = hostname || 'localhost';
-	var _onConnected = onConnected || function() {_debug('XBMC Web Sockets Connected');}
-	var _onDisconnected = onDisconnected || function() {_debug('XBMC Web Sockets Connected');}
+	var _port = _settings.port;
+	var _hostname = _settings.hostname;
+	var _onConnected = _settings.onConnected;
+	var _onDisconnected = _settings.onDisconnected;
+	
+	function extend(a,b) {
+		for(var key in b)
+     	   if(a.hasOwnProperty(key))
+	            a[key] = b[key];
+	    return a;
+	}
 	
 	function init() {
 		// firefox websockets
 		if (window.MozWebSocket) {
 			window.WebSocket = window.MozWebSocket;
 		}
-		_available = XbmcWebSockets.isAvailable();
+		_available = XbmcWebSocketsApi.isAvailable();
 		if (_available === true) {
 			_ws = new WebSocket('ws://' + _hostname + ':' + _port + '/jsonrpc');
 			_ws.onopen = onWsOpen;
@@ -140,6 +154,6 @@ function XbmcWebSocketsApi(hostname, onConnected, onDisconnected) {
 	init();
 }
 
-XbmcWebSockets.isAvailable = function() {
+XbmcWebSocketsApi.isAvailable = function() {
 	return ("WebSocket" in window);
 }

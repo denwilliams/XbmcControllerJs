@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+
+  <script type="text/javascript" src="XbmcWebSocketsApi.js"></script>
+
+  <script type="text/javascript">
+  	var xw = new XbmcWebSocketsApi({
+	  	hostname:'localhost'
+	  	,onConnected:function() {
+		  	xw.subscribe('Application.OnVolumeChanged', vc);
+		  	xw.call('Application.SetMute',{mute:true}); 	
+	  	}
+	  	,onDisconnected:function() {}	
+  	});
+  	
+  	function vc(data) {
+	  	console.log('volume changed');
+  	}
+  	
+  </script>
+</body>
+
+</html>
