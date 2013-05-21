@@ -1,4 +1,4 @@
-function XbmcWebSockets(hostname, onConnected, onDisconnected) {
+function XbmcWebSocketsApi(hostname, onConnected, onDisconnected) {
 	//"use strict";
 	var self = this;
 	
