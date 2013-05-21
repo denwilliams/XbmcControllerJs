@@ -62,13 +62,13 @@ xbmc.Application.SetMute({mute:true});
 <p>Usage:</p>
 
 <pre><code>var xbmcWs = new XbmcWebSockets({hostname:'192.168.0.10'}); // &lt;-- XBMC IP or Hostname
-xbmc.subscribe('Application.OnVolumeChanged',onVolChanges);
+xbmcWs.subscribe('Application.OnVolumeChanged',onVolChanged);
 xbmcWs.call('Application.SetMute',{mute:true}); // &lt;-- will cause onVolChanged to be called
-xbmcWs.unsubscribe('Application.OnVolumeChanged',onVolChanges);
+xbmcWs.unsubscribe('Application.OnVolumeChanged',onVolChanged);
 
 function onVolChanged(response) {
     console.log('New volume is '+reponse.volume);
-    console.log('New mute is '+response.mute);
+    console.log('New mute is '+response.muted);
 }
 </code></pre>
 
