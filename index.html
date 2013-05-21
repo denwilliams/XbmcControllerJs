@@ -39,7 +39,13 @@
 <li>XbmcWebSocketsApi</li>
 <li>XbmcHttpApi</li>
 <li>XbmcController</li>
-</ul><p>XbmcController uses the other two classes. Typically you will only need to use XbmcController, but it is possible to communicate with XbmcWebSocketsApi or XbmcHttpApi directly.</p>
+</ul><p>XbmcController uses the Api classes. Typically you will only need to use XbmcController, but it is possible to communicate with XbmcWebSocketsApi or XbmcHttpApi directly.</p>
+
+<p>XbmcController will attempt to use Web Sockets first. Web sockets allows for 2-way communications, so notifications for events will be instantaneous. In addition, Web Sockets supports will work cross domain! No more CORS errors.</p>
+
+<p>All major browsers now support Web Sockets... even IE (since v10)! See - <a href="http://caniuse.com/websockets">http://caniuse.com/websockets</a></p>
+
+<p>HTTP API has to poll, so notifications will be delayed. In addition, each item needs to be manually polled for. As such, the HTTP API only supports a small set of notifications.</p>
 
 <h4>XbmcController</h4>
 
