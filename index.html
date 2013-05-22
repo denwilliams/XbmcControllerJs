@@ -33,13 +33,13 @@
         <section id="main_content">
           <h3>Components</h3>
 
-<p>XbmcControllerJs consists of 3 main components/classes:</p>
+<p>XbmcControllerJs consists of 3 main components:</p>
 
 <ul>
-<li>XbmcWebSocketsApi</li>
-<li>XbmcHttpApi</li>
-<li>XbmcController</li>
-</ul><p>XbmcController uses the Api classes. Typically you will only need to use XbmcController, but it is possible to communicate with XbmcWebSocketsApi or XbmcHttpApi directly.</p>
+<li>XbmcController (not currently uploaded to GitHub)</li>
+<li>XbmcCachedQueries (not currently complete)</li>
+<li>XbmcWebSocketsApi (complete) / XbmcHttpApi (only volume notification can be subscribed to)</li>
+</ul><p>XbmcController uses the Api classes. Typically you will only need to use XbmcController, but it is possible to communicate with XbmcCachedQueries, XbmcWebSocketsApi or XbmcHttpApi directly.</p>
 
 <p>XbmcController will attempt to use Web Sockets first. Web sockets allows for 2-way communications, so notifications for events will be instantaneous. In addition, Web Sockets supports will work cross domain! No more CORS errors.</p>
 
