@@ -36,12 +36,12 @@ Xbmc.HttpApi = function(options) {
 	var _monitoredValues = {};
 
 	var _settings = extend({
-		hostname: null
+		host: null
 		,port: '8080'
 	}, options || {});
 	
 	var _url = (_settings.hostname) 
-		? 'http://' + _settings.hostname + ':' + _settings.port + '/jsonrpc'
+		? 'http://' + _settings.host + ':' + _settings.port + '/jsonrpc'
 		: '/jsonrpc';
 	
 	function extend(a,b) {

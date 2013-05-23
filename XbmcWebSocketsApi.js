@@ -15,7 +15,7 @@ Xbmc.WebSocketsApi = function(options) {
 	var _notificationBindings = {};
 	
 	var _settings = extend({
-		hostname: 'localhost'
+		host: 'localhost'
 		,port: '9090'
 		,onConnected: function() {_debug('XBMC Web Sockets Connected');}
 		,onDisconnected: function() {_debug('XBMC Web Sockets Connected');}
@@ -25,7 +25,7 @@ Xbmc.WebSocketsApi = function(options) {
 	var _available = false;
 	var _ws; // the websocket
 	var _port = _settings.port;
-	var _hostname = _settings.hostname;
+	var _hostname = _settings.host;
 	var _onConnected = _settings.onConnected;
 	var _onDisconnected = _settings.onDisconnected;
 	

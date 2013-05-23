@@ -11,7 +11,7 @@
   <script type="text/javascript">
   	Xbmc.DEBUG = true;
   	var xw = new Xbmc.WebSocketsApi({
-	  	hostname:'localhost'
+	  	host:'localhost'
 	  	,onConnected:function() {
 		  	xw.subscribe('Application.OnVolumeChanged', vc);
 		  	xw.call('Application.SetMute',{mute:true}); 	
