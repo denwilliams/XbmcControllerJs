@@ -1,4 +1,6 @@
-function XbmcWebSocketsApi(options) {
+window.Xbmc = window.Xbmc || {};
+
+Xbmc.WebSocketsApi = function(options) {
 	"use strict";
 	var self = this;
 	
@@ -39,7 +41,7 @@ function XbmcWebSocketsApi(options) {
 		if (window.MozWebSocket) {
 			window.WebSocket = window.MozWebSocket;
 		}
-		_available = XbmcWebSocketsApi.isAvailable();
+		_available = Xbmc.WebSocketsApi.isAvailable();
 		if (_available === true) {
 			_ws = new WebSocket('ws://' + _hostname + ':' + _port + '/jsonrpc');
 			_ws.onopen = onWsOpen;
@@ -52,7 +54,8 @@ function XbmcWebSocketsApi(options) {
 	}
 	
 	function _debug(msg) {
-		console.log(msg);
+		if (Xbmc.DEBUG === true)
+			console.log(msg);
 	}
 	
 	function onWsOpen() {
@@ -154,6 +157,6 @@ function XbmcWebSocketsApi(options) {
 	init();
 }
 
-XbmcWebSocketsApi.isAvailable = function() {
+Xbmc.WebSocketsApi.isAvailable = function() {
 	return ("WebSocket" in window);
 }

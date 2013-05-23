@@ -9,7 +9,8 @@
   <script type="text/javascript" src="XbmcHttpApi.js"></script>
 
   <script type="text/javascript">
-  	var xbmcApi = new XbmcHttpApi();
+  	Xbmc.DEBUG = true;
+  	var xbmcApi = new Xbmc.HttpApi();
   	//function() {
 	  	xbmcApi.subscribe('Application.OnVolumeChanged', vc);
 	  	xbmcApi.call('Application.SetMute',{mute:false},function(response) {console.log('success');});

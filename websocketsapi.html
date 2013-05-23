@@ -9,7 +9,8 @@
   <script type="text/javascript" src="XbmcWebSocketsApi.js"></script>
 
   <script type="text/javascript">
-  	var xw = new XbmcWebSocketsApi({
+  	Xbmc.DEBUG = true;
+  	var xw = new Xbmc.WebSocketsApi({
 	  	hostname:'localhost'
 	  	,onConnected:function() {
 		  	xw.subscribe('Application.OnVolumeChanged', vc);

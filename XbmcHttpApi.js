@@ -1,4 +1,6 @@
-function XbmcHttpApi(options) {
+window.Xbmc = window.Xbmc || {};
+
+Xbmc.HttpApi = function(options) {
 	var self = this;
 	
 	var _refreshTimer;
@@ -64,7 +66,7 @@ function XbmcHttpApi(options) {
 	this.call = function(method, params, onSuccess, onError) {
 		var cmd = buildCommand(method,params);
 		//xdr(_url,'POST',JSON.stringify(cmd),onSuccess,onError);
-		var xhr = XbmcHttpApi.createCORSRequest('POST',_url);
+		var xhr = Xbmc.HttpApi.createCORSRequest('POST',_url);
 		
 		//var xhr = createCORSRequest('POST', url);
 		if (!xhr) {
@@ -112,12 +114,12 @@ function XbmcHttpApi(options) {
 	_startRefresh();
 }
 
-XbmcHttpApi.isAvailable = function() {
+Xbmc.HttpApi.isAvailable = function() {
 	var xhr = XbmcHttpApi.createCORSRequest('GET', url);
 	if (xhr) return true;
 	return false;
 }
-XbmcHttpApi.createCORSRequest = function(method, url) {
+Xbmc.HttpApi.createCORSRequest = function(method, url) {
 	var xhr = new XMLHttpRequest();
 	if ("withCredentials" in xhr) {
 		// Check if the XMLHttpRequest object has a "withCredentials" property.

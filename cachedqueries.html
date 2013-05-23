@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+
+  <script type="text/javascript" src="XbmcWebSocketsApi.js"></script>
+  <script type="text/javascript" src="XbmcCachedQueryController.js"></script>
+
+  <script type="text/javascript">
+  	Xbmc.DEBUG = true;
+  	var xw = new Xbmc.WebSocketsApi({
+	  	hostname:'192.168.0.22'
+	  	,onConnected:function() {
+	  		var cache = new Xbmc.CachedQueryController(xw);
+	  		cache.clearCache();
+	  		cache.call('AudioLibrary.GetArtists',{albumartistsonly: true}, function(r) {
+                    
+                    	// the next call should retrieve from cache
+                    	cache.call('AudioLibrary.GetArtists',{albumartistsonly: true}, function(r) {
+                    		
+                    		// the next call should NOT retrieve from cache
+							cache.call('AudioLibrary.GetArtists',{albumartistsonly: false}, function(r) {
+                    		
+							});
+                    	
+                    	});
+	                    
+                    });
+	  	}
+	  	,onDisconnected:function() {}	
+  	});
+  	  	
+  </script>
+</body>
+
+</html>
