@@ -143,7 +143,7 @@ Xbmc.CachedQueryController = function(apiController, options) {
 		_permCache['settings'] = JSON.stringify(settings);	
 	};
 
-	
+	/** Clears all items from cache with the exception of the settings object */
 	this.clearCache = function() {
 		// preserve settings
 		var settings = self.getSettings();
@@ -169,14 +169,15 @@ Xbmc.CachedQueryController = function(apiController, options) {
 	 * {function} [onSuccess]
 	 * {function} [onError]
 	 * {string} [useCache] - Identifies which cache to use - 'none', 'sess', 'perm'
+	 * {boolean} [forceRefresh] - If true then will ALWAYS retrieve a fresh version from the API
 	 */
-	this.call = function(method, params, onSuccess, onError, useCache) {
+	this.call = function(method, params, onSuccess, onError, useCache, forceRefresh) {
 		params = params || {};
 		useCache = useCache || _settings.defaultCache;
 
 		var key = method + '.' + _generateKey(JSON.stringify(params));
 		// attempt to retrieve from cache
-		var cacheObj = (useCache == 'none')
+		var cacheObj = (forceRefresh === true || useCache == 'none')
 			? null
 			: (useCache == 'perm')
 			? _getFromPermanentCache(key)
@@ -189,7 +190,14 @@ Xbmc.CachedQueryController = function(apiController, options) {
 		} else {
 			_debug(method + ' requested from API');
 			_api.call(method, params, function (response) {
-				_saveToSessionCache(key, response);
+				switch (useCache) {
+					case 'perm':
+						_saveToPermanentCache(key, response);
+						break;
+					case 'sess':
+						_saveToSessionCache(key, response);
+						break;
+				}
 				if (typeof onSuccess == 'function') {
 					onSuccess(response);
 				}
