@@ -203,8 +203,25 @@ this.getVolume = function() {
 	    	}
 	    	return self.volume;
     };
+    
 */
 
+	//*************************************************************************
+	//* XBMC API Interface Methods
+	//*************************************************************************
+
+	this.call = function(method, params, onSuccess, onError, useCache) {
+		return _cachedApi(method, params, onSuccess, onError, useCache);
+	};
+	
+	this.subscribe = function(notification, handler) {
+		return _api.subscribe(notification, handler);
+	};
+	
+	this.unsubscribe = function(notification, handler) {
+		return _api.unsubscribe(notification, handler);
+	};
+	
 	/* ## Init ## */
 	
 	// construct
