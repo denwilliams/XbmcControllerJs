@@ -6,6 +6,14 @@
 
 <body>
 
+	<ul id="system"></ul>
+	<ul id="player"></ul>
+	<ul id="playlist"></ul>
+	<ul id="volume"></ul>
+	<ul id="other"></ul>
+	
+	
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
   <script type="text/javascript" src="XbmcWebSocketsApi.js"></script>
   <script type="text/javascript" src="XbmcHttpApi.js"></script>
   <script type="text/javascript" src="XbmcCachedQueryController.js"></script>
@@ -14,10 +22,48 @@
   <script type="text/javascript">
   	Xbmc.DEBUG = true;
   	var c = new Xbmc.Controller({
-	  	host:'192.168.0.22'
-//	  	,onInit:function() { }
+	  	host:'192.168.0.24'
+	  //	host:'localhost'
+	  	,onInit:function() { 
+	  		bindings();
+	  		doStuff();
+	  	}
 //	  	,onFail:function() { }	
   	});
+  	
+  	function bindings() {
+	  	c.onPlayerEvent(playerEvent);
+	  	c.onVolumeChanged(volEvent); 
+	  	c.onSystemEvent(sysEvent);
+	  	c.onPlaylistEvent(playlistEvent);
+  	}
+  	
+  	function doStuff() {
+	  	c.setVolume(100);
+	  	c.setMute(true);
+	  	c.setMute(false);
+	  	c.sendNotification('test','message');
+	  	c.getArtists(function(artists) {
+	  		other(artists);
+	  		c.getAlbumsByArtist(1,function(albums) { other(albums); });
+	  	});
+  	}
+  	
+  	function sysEvent(obj) {
+	  	$('ul#system').append('<li>'+JSON.stringify(obj)+'</li>');
+  	}
+  	function volEvent(obj) {
+	  	$('ul#volume').append('<li>'+JSON.stringify(obj)+'</li>');
+  	}
+  	function playerEvent(obj) {
+	  	$('ul#player').append('<li>'+JSON.stringify(obj)+'</li>');
+  	}
+  	function playlistEvent(obj) {
+	  	$('ul#playlist').append('<li>'+JSON.stringify(obj)+'</li>');
+  	}
+  	function other(obj) {
+	  	$('ul#other').append('<li>'+JSON.stringify(obj)+'</li>');
+  	}
   	  	
   </script>
 </body>

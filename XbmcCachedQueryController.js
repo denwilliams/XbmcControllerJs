@@ -168,8 +168,8 @@ Xbmc.CachedQueryController = function(apiController, options) {
 	 * {object} [params]
 	 * {function} [onSuccess]
 	 * {function} [onError]
-	 * {string} [useCache] - Identifies which cache to use - 'none', 'sess', 'perm'
-	 * {boolean} [forceRefresh] - If true then will ALWAYS retrieve a fresh version from the API
+	 * {string} [useCache='sess'] - Identifies which cache to use - 'none', 'sess', 'perm'
+	 * {boolean} [forceRefresh=false] - If true then will ALWAYS retrieve a fresh version from the API
 	 */
 	this.call = function(method, params, onSuccess, onError, useCache, forceRefresh) {
 		params = params || {};
