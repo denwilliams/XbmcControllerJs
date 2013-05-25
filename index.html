@@ -40,32 +40,31 @@
 <p>XbmcControllerJs consists of 3 main components:</p>
 
 <ul>
-<li>XbmcController (not currently uploaded to GitHub)</li>
-<li>XbmcCachedQueries (not currently complete)</li>
-<li>XbmcWebSocketsApi (complete) / XbmcHttpApi (only volume notification can be subscribed to)</li>
-</ul><p>XbmcController uses the Api classes. Typically you will only need to use XbmcController, but it is possible to communicate with XbmcCachedQueries, XbmcWebSocketsApi or XbmcHttpApi directly.</p>
+<li>Xbmc.Controller</li>
+<li>Xbmc.CachedQueries</li>
+<li>Xbmc.WebSocketsApi / Xbmc.HttpApi (only volume notification can be subscribed to)</li>
+</ul><p>Typically you will only need to use Xbmc/Controller, but it is possible to communicate with Xbmc.CachedQueries, Xbmc.WebSocketsApi or Xbmc.HttpApi directly.</p>
 
-<p>XbmcController will attempt to use Web Sockets first. Web sockets allows for 2-way communications, so notifications for events will be instantaneous. In addition, Web Sockets supports will work cross domain! No more CORS errors.</p>
+<p>Xbmc.Controller will attempt to use Web Sockets first. Web sockets allows for 2-way communications, so notifications for events will be instantaneous. In addition, Web Sockets supports will work cross domain requests - No more CORS errors! All major browsers now support Web Sockets. Even IE (since v10). See - <a href="http://caniuse.com/websockets">http://caniuse.com/websockets</a></p>
 
-<p>All major browsers now support Web Sockets... even IE (since v10)! See - <a href="http://caniuse.com/websockets">http://caniuse.com/websockets</a></p>
+<p>HTTP API has to poll, so notifications will be delayed and have a higher overhead. In addition, each item needs to be individually polled for, and thus specifically implemented. As such, the HTTP API only supports a small set of notifications.</p>
 
-<p>HTTP API has to poll, so notifications will be delayed and have a higher overhead. In addition, each item needs to be manually polled for. As such, the HTTP API only supports a small set of notifications.</p>
-
-<h4>XbmcController (first upload pending)</h4>
+<h4>Xbmc.Controller (first upload pending)</h4>
 
 <p>Usage:</p>
 
-<pre><code>var xbmc = new XbmcController(); // automatically determines websockets or http
-xbmc.Application.SetMute({mute:true});
+<pre><code>var xbmc = new Xbmc.Controller(); // automatically determines websockets or http
+xbmc.setMute(true); // helper command
+xbmc.Application.SetMute({mute:true}); // any RPC command can be run under the controller class
 </code></pre>
 
-<h4>XbmcWebSocketsApi &amp; XbmcHttpApi</h4>
+<h4>Xbmc.WebSocketsApi &amp; Xbmc.HttpApi</h4>
 
 <p>Both classes follow the same interface. The only difference between the two is the notifications that can be subscribed to.</p>
 
 <p>Usage:</p>
 
-<pre><code>var xbmcWs = new XbmcWebSockets({hostname:'192.168.0.10'}); // &lt;-- XBMC IP or Hostname
+<pre><code>var xbmcWs = new Xbmc.WebSockets({hostname:'192.168.0.10'}); // &lt;-- XBMC IP or Hostname
 xbmcWs.subscribe('Application.OnVolumeChanged',onVolChanged);
 xbmcWs.call('Application.SetMute',{mute:true}); // &lt;-- will cause onVolChanged to be called
 xbmcWs.unsubscribe('Application.OnVolumeChanged',onVolChanged);
@@ -84,9 +83,11 @@ function onVolChanged(response) {
 
 <ul>
 <li>
-<a href="https://github.com/bailus/XBMC-Simple-Remote">https://github.com/bailus/XBMC-Simple-Remote</a> - by (<a href="https://github.com/bailus" class="user-mention">@bailus</a>)</li>
+<a href="https://github.com/bailus/XBMC-Simple-Remote">https://github.com/bailus/XBMC-Simple-Remote</a> - by <a href="https://github.com/bailus" class="user-mention">@bailus</a>
+</li>
 <li>
-<a href="https://github.com/lucifurious/jquery-xbmc">https://github.com/lucifurious/jquery-xbmc</a> - by (<a href="https://github.com/lucifurious" class="user-mention">@lucifurious</a>)</li>
+<a href="https://github.com/lucifurious/jquery-xbmc">https://github.com/lucifurious/jquery-xbmc</a> - by <a href="https://github.com/lucifurious" class="user-mention">@lucifurious</a>
+</li>
 </ul>
         </section>
 
