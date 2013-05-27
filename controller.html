@@ -28,7 +28,9 @@
 	  		bindings();
 	  		doStuff();
 	  	}
-//	  	,onFail:function() { }	
+	  	,onFail:function() { alert('XBMC Fail'); }	
+	  	,onOnline:function() { alert('XBMC Online'); }	
+	  	,onOffline:function() { alert('XBMC Offline'); }	
   	});
   	
   	function bindings() {
@@ -40,13 +42,13 @@
   	
   	function doStuff() {
 	  	c.setVolume(100);
-	  	c.setMute(true);
-	  	c.setMute(false);
+	  	//c.setMute(true);
+	  	//c.setMute(false);
 	  	c.sendNotification('test','message');
-	  	c.getArtists(function(artists) {
-	  		other(artists);
-	  		c.getAlbumsByArtist(1,function(albums) { other(albums); });
-	  	});
+	  	//c.getArtists(function(artists) {
+	  	//	other(artists);
+	  	//	c.getAlbumsByArtist(1,function(albums) { other(albums); });
+	  	//});
   	}
   	
   	function sysEvent(obj) {

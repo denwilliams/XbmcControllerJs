@@ -3,11 +3,16 @@ window.Xbmc = window.Xbmc || {};
 Xbmc.Controller = function(options) {
 	var self = this;
 	
+	var _initialised = false; // not yet initialised
+	var _protocol = null; // not yet defined
+	
 	var _settings = _extend({
 		host: 'localhost'
 		,port: 8080
 		,onInit: function() { _debug('Xbmc Controller Initialised'); }
 		,onFail: function() { console.error('Xbmc Controller failed to init'); }
+		,onOnline: function() { _debug('Xbmc is online'); }
+		,onOffline: function() { _debug('Xbmc is offline'); }
 		,protocol: 'auto'
 		,defaultCache: 'none'
 	},options || {});
@@ -27,15 +32,25 @@ Xbmc.Controller = function(options) {
 		if (Xbmc.WebSocketsApi.isAvailable()) {
 			_tryWebSockets(
 				function() {
-					_onInit();
+					// SUCCESS
+					if (_initialised === true) {
+						_settings.onOnline();
+					} else {
+						_onInit();
+					}
 				}, function() {
-					_tryHttp(
-						function() {
-							_onInit();
-						}, function() {
-							console.error('Xbmc.HttpApi failed');
-						}
-					);					
+					// FAIL
+					if (_initialised === true) { // web sockets WAS working... just a dropout
+						_settings.onOffline();
+					} else { // web sockets might be disabled... try HTTP
+						_tryHttp(
+							function() {
+								_onInit();
+							}, function() {
+								console.error('Xbmc.HttpApi failed');
+							}
+						);
+					}
 				}
 			);
 		} else if (Xbmc.HttpApi.isAvailable()) {
@@ -49,6 +64,9 @@ Xbmc.Controller = function(options) {
 		}
 	}
 	
+	/**
+	 * Event handler for XBMC initialisation
+	 */
 	function _onInit() {
 		_applyCache();
 		_addMethods(function() {
@@ -61,9 +79,10 @@ Xbmc.Controller = function(options) {
 				}
 			});
 */
-			self.JSONRPC.SetConfiguration();
 
+			_initialised = true;
 			_settings.onInit();	
+			_settings.onOnline();
 		});
 	}
 
@@ -75,8 +94,12 @@ Xbmc.Controller = function(options) {
 		_debug('Attempting to use web sockets');
 		_api = new Xbmc.WebSocketsApi({
 			host:_settings.host
-			, onConnected: function() { onSuccess(); }
-			, onDisconnected: function() { onError(); }
+			, onConnected: function() { 
+				_protocol = 'ws';
+				onSuccess(); 
+			}, onDisconnected: function() { 
+				onError(); 
+			}
 		});
 	}
 	function _tryHttp(onSuccess, onError) {
@@ -88,8 +111,12 @@ Xbmc.Controller = function(options) {
 		_api = new Xbmc.HttpApi({
 			host:_settings.host
 			, port:_settings.port
-			, onConnected: function() { onSuccess(); }
-			, onDisconnected: function() { onError(); }
+			, onConnected: function() { 
+				_protocol = 'http';
+				onSuccess(); 
+			}, onDisconnected: function() { 
+				onError(); 
+			}
 		});		
 	}
 	function _applyCache() {
@@ -362,7 +389,7 @@ this.getVolume = function() {
 */
 	/* (((( WEATHER )))) */
 	
-	this.weatherTimer = null;
+	var _weatherTimer = null;
 
 	this.getWeather = function(callback) {
 		var labels = [
@@ -384,7 +411,7 @@ this.getVolume = function() {
         		}
         	}
 		}
-		weatherTimer = setInterval(function(){
+		_weatherTimer = setInterval(function(){
 			self.getWeather(checkWeatherChanged);
 		},60000);
 		self.getWeather(checkWeatherChanged);
@@ -417,14 +444,12 @@ this.getVolume = function() {
 	 * {function} callback - The function to add as a callback
 	 */
 	this.onPlayerEvent = function(callback) {
-		_api.subscribe('Player.OnPlay', function(response) {callback({event: 'play', data: response.data})});
-		_api.subscribe('Player.OnPaused', function(response) {callback({event: 'pause', data: response.data})});
-		_api.subscribe('Player.OnStop', function(response) {callback({event: 'stop', data: response.data})});
-
-		_api.subscribe('Player.OnPropertyChanged', function(response) {callback({event: 'property', data: response.data})});
-
-		_api.subscribe('Player.OnSeek', function(response) {callback({event: 'seek', data: response.data})});
-		_api.subscribe('Player.OnSpeedChanged', function(response) {callback({event: 'speed', data: response.data})});
+		_api.subscribe('Player.OnPlay', function(response) {callback({event: 'play', data: response})});
+		_api.subscribe('Player.OnPause', function(response) {callback({event: 'pause', data: response})});
+		_api.subscribe('Player.OnStop', function(response) {callback({event: 'stop', data: response})});
+		_api.subscribe('Player.OnPropertyChanged', function(response) {callback({event: 'property', data: response})});
+		_api.subscribe('Player.OnSeek', function(response) {callback({event: 'seek', data: response})});
+		_api.subscribe('Player.OnSpeedChanged', function(response) {callback({event: 'speed', data: response})});
 	};
 	
 	/**
@@ -438,9 +463,9 @@ this.getVolume = function() {
 	 * {function} callback - The function to add as a callback
 	 */
 	this.onPlaylistEvent = function(callback) {
-		_api.subscribe('Player.OnAdd', function(response) {callback({event: 'add', data: response.data})});
-		_api.subscribe('Player.OnRemove', function(response) {callback({event: 'remove', data: response.data})});	
-		_api.subscribe('Player.OnClear', function(response) {callback({event: 'clear', data: response.data})});
+		_api.subscribe('Player.OnAdd', function(response) {callback({event: 'add', data: response})});
+		_api.subscribe('Player.OnRemove', function(response) {callback({event: 'remove', data: response})});	
+		_api.subscribe('Player.OnClear', function(response) {callback({event: 'clear', data: response})});
 	};
 	
 	/**
