@@ -338,9 +338,9 @@ Xbmc.Controller = function(options) {
     /* (((( PLAYLISTS )))) */
     
     this.playlists = {
-		0: new Playlist(0, 'audio', self) 
-		,1: new Playlist(1, 'video', self)  
-		,2: new Playlist(2, 'pictures', self)  
+		0: new Xbmc.Playlist(0, 'audio', self) 
+		,1: new Xbmc.Playlist(1, 'video', self)  
+		,2: new Xbmc.Playlist(2, 'pictures', self)  
     };
     this.playlists.audio = this.playlists['0'];
     this.playlists.video = this.playlists['1'];
@@ -350,9 +350,9 @@ Xbmc.Controller = function(options) {
     /* (((( PLAYERS )))) */
     
     this.players = {
-		0: new Player(0, 'audio', self, this.playlists.audio) 
-		,1: new Player(1, 'video', self, this.playlists.video)  
-		,2: new Player(2, 'pictures', self, this.playlists.pictures)  
+		0: new Xbmc.Player(0, 'audio', self, this.playlists.audio) 
+		,1: new Xbmc.Player(1, 'video', self, this.playlists.video)  
+		,2: new Xbmc.Player(2, 'pictures', self, this.playlists.pictures)  
     };
     this.players.audio = this.players['0'];
     this.players.video = this.players['1'];
@@ -515,8 +515,13 @@ this.getVolume = function() {
 };
 
 
-
-function Playlist(id, type, xbmcController) {
+/**
+ * Controls a specific playlist for XBMC (audio/video/pictures)
+ * @param {number} id - Typically audio = 1, video = 2, pictures = 3
+ * @param {string} type - audio/video/pictures
+ * @param {Xbmc.Controller} xbmcController - The controller class to use
+ */
+Xbmc.Playlist = function(id, type, xbmcController) {
 	var self = this;
 	
 	var _xbmc = xbmcController;
@@ -563,9 +568,16 @@ function Playlist(id, type, xbmcController) {
             },null,false);
     	}
     }
-}
+};
 
-function Player(id, type, xbmcController, playlist) {
+/**
+ * Controls a specific player for XBMC (audio/video/pictures)
+ * @param {number} id - Typically audio = 1, video = 2, pictures = 3
+ * @param {string} type - audio/video/pictures
+ * @param {Xbmc.Controller} xbmcController - The controller class to use
+ * @param {Xbmc.Playlist} playlist - The playlist associated with this player
+ */
+Xbmc.Player = function(id, type, xbmcController, playlist) {
 	var self = this;
 	
 	var _xbmc = xbmcController;
@@ -639,6 +651,6 @@ function Player(id, type, xbmcController, playlist) {
             ,to: 'next'
         }, null, false);
     };
-}
+};
 
 
