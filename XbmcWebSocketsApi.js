@@ -11,7 +11,7 @@ Xbmc.WebSocketsApi = function(options) {
 	var SOCKET_OPEN = 1;
 	var SOCKET_CLOSED = 2; 
 	
-	var CALL_TIMEOUT = 5000; //number of milliseconds to wait before retrying an API call
+	var CALL_TIMEOUT = 60000; //number of milliseconds to wait before retrying an API call
 	var CALL_RETRIES = 3; // number of times to retry a call before failing
 	
 	var _cmdId = 1; // the next command ID in sequence (used for JSON-RPC id)
@@ -36,8 +36,8 @@ Xbmc.WebSocketsApi = function(options) {
 	var _hostname = _settings.host;
 	var _onConnected = _settings.onConnected;
 	var _onDisconnected = _settings.onDisconnected;
-	var _monitorTimer = null;
-	var _monitorCount = 0;
+	//var _monitorTimer = null;
+	//var _monitorCount = 0;
 	
 	/** Constructor
 	 * @private
@@ -77,11 +77,13 @@ Xbmc.WebSocketsApi = function(options) {
 			if (interval > CALL_TIMEOUT) {
 				// already retried too much?
 				if (cmd.attempt > CALL_RETRIES) {
+					_debug('Too many retried for '+cmd.method);
 					// fail the command
 					if (typeof cmd.onError === 'function') {
 						cmd.onError('Too many retries');
 					}
 				} else {
+					_debug('Retrying '+cmd.method);
 					// retry the command
 					self.call(cmd.method, cmd.params, cmd.onSuccess, cmd.onError, cmd.attempt++);
 				}
@@ -121,6 +123,7 @@ Xbmc.WebSocketsApi = function(options) {
 	 * Pings the server. Alerts onWsClose if no reply is received.
 	 * @private
 	 */
+/*
 	function _monitor() {
 		if (_monitorCount > 0) { // last ping failed!
 			_onWsClose();
@@ -133,15 +136,16 @@ Xbmc.WebSocketsApi = function(options) {
 			});
 		}
 	}
+*/
 	
 	/**
 	 * Event handler for the websocket open event
 	 * @private
 	 */
 	function _onWsOpen() {
-		if (!_monitorTimer) {
-			_monitorTimer = setInterval(_monitor, 5000);
-		}
+		//if (!_monitorTimer) {
+		//	_monitorTimer = setInterval(_monitor, 5000);
+		//}
 		if (!_retryTimer) {
 			_retryTimer = setInterval(_checkForTimedOutCalls, 2000);
 		}
@@ -182,18 +186,20 @@ Xbmc.WebSocketsApi = function(options) {
 			_debug('received reply for '+obj.id);
 			// try and find the callbacks
 			var callbacks = _pendingCmds[obj.id];
-			delete _pendingCmds[obj.id];
-			// error?
-			if (typeof obj.error === 'object') {
-				if (typeof callbacks.onError === 'function') {
-					callbacks.onError(obj.error);
+			if (callbacks) {
+				// error?
+				if (typeof obj.error === 'object') {
+					if (typeof callbacks.onError === 'function') {
+						callbacks.onError(obj.error);
+					}
+				} else {
+					if (typeof callbacks.onSuccess === 'function') {
+						callbacks.onSuccess(obj.result);
+					}
 				}
-			} else {
-				if (typeof callbacks.onSuccess === 'function') {
-					callbacks.onSuccess(obj.result);
-				}
+				delete _pendingCmds[obj.id];
 			}
-			_debug(JSON.stringify(_pendingCmds));
+			//_debug(JSON.stringify(_pendingCmds));
 		} else if (typeof obj.method !== 'undefined') { // notification
 			_parseNotification(obj.method, obj.params.data);
 		}	
@@ -265,7 +271,8 @@ Xbmc.WebSocketsApi = function(options) {
 			};
 			_ws.send(JSON.stringify(cmd));
 		} else {
-			onError('Not connected');
+			if (typeof onError === 'function')
+				onError('Not connected');
 		}
 	};
 	
@@ -309,6 +316,9 @@ Xbmc.WebSocketsApi = function(options) {
 	_init();
 }
 
+/**
+ * Returns true if the current browser has Web Sockets capabilities
+ */
 Xbmc.WebSocketsApi.isAvailable = function() {
 	return ("WebSocket" in window);
 }

@@ -15,8 +15,7 @@
 	  	,onConnected:function() {
 		  	xw.subscribe('Application.OnVolumeChanged', vc);
 		  	xw.call('Application.SetMute',{mute:true}); 	
-	  	}
-	  	,onDisconnected:function() {}	
+	  	} ,onDisconnected:function() {}	
   	});
   	
   	function vc(data) {

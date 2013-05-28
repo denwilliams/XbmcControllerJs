@@ -194,6 +194,10 @@ Xbmc.Controller = function(options) {
 	
 	/* #### PUBLIC #### */
 	
+	this.clearCache = function() {
+		_cachedApi.clearCache();	
+	};
+	
 	//*************************************************************************
 	//* Public XBMC Helper Methods
 	//*************************************************************************
